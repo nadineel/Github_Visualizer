@@ -23,11 +23,7 @@ async function main(userId){
     let userInfo = await getRequest(url).catch(error => console.error(error));
 
     userInfo_col(userInfo)
-
-    
-    url=`https://api.github.com/users/${userId}/repos`;
-    let repoInfo=await getRequest(url).catch(error => console.error(error)); 
-    repoSearchBox(repoInfo); 
+    repoSearchBox(); 
 }
 
 async function getRequest(url) {
@@ -72,12 +68,9 @@ function userInfo_col(userInfo){
     public_repos.innerHTML = `<b>Public Repositories: </b>${userInfo.public_repos}`;
 }
 
-function repoSearchBox(repoInfo){
+function repoSearchBox(){
     document.getElementById("repoSearchBox").style.display = "block";
-    let repoNames=document.querySelectorAll('name');
-    repoNames.innerHTML = `${repoInfo[1].name}`;
     
-
 }
 
 async function show(value){    
@@ -85,7 +78,6 @@ async function show(value){
     let repoInfo=await getRequest(url).catch(error => console.error(error)); 
 
     document.getElementById("datalist").innerHTML="";
-    list=value.length
     for(let i=0;i<repoInfo.length;i++){
         if((((repoInfo[i].name).toLowerCase()).indexOf(value.toLowerCase()))>-1){
             var n=document.createElement("option");
@@ -98,6 +90,85 @@ async function show(value){
 }
 
 
-function findRepo(repo){
-    console.log("searching");
+async function findRepo(){
+    if (chart2 != null) chart2.destroy();
+    
+    
+    var repoName=document.getElementById("repo").value ;
+    console.log(repoName);
+    url=`https://api.github.com/repos/${globalId}/${repoName}/languages`;
+    let repoInfo=await getRequest(url).catch(error => console.error(error));
+    get_language_pie(repoInfo);
 }
+async function get_language_pie(repo) {
+    let label = [];
+    let data = [];
+    let backgroundColor = [];
+    let languages=repo;
+
+        for (language in languages) {
+            
+            if (label.includes(language)) {
+                for (i = 0; i < label.length; i++)
+                    if (language == label[i])
+                        data[i] = data[i] + languages[language];
+
+            } else {
+                label.push(language);
+                data.push(languages[language]);
+                backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.2)`);       
+            }
+        }
+
+
+
+    draw2('language', 'pie', 'languages', `💭 Programming Languages (in bytes) 💭`, label, data, backgroundColor);
+}
+
+function draw2(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
+    console.log(ctx);
+    let myChart = document.getElementById(ctx).getContext('2d');
+
+    chart2 = new Chart(myChart, {
+        type: type,
+        data: {
+            labels: label,
+            datasets: [{
+                label: datasetLabel,
+                data: data,
+                backgroundColor: backgroundColor,
+                borderWidth: 1,
+                borderColor: '#777',
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#000'
+            }],
+
+        },
+        options: {
+            title: {
+                display: true,
+                text: titleText,
+                fontSize: 20
+            },
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    fontColor: '#000'
+                }
+            },
+            layout: {
+                padding: {
+                    left: 50,
+                    right: 0,
+                    bottom: 0,
+                    top: 0
+                }
+            },
+            tooltips: {
+                enabled: true
+            }
+        }
+    });
+}
+var chart2=null;

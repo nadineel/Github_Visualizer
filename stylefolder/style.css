@@ -33,17 +33,17 @@ body{
         height: 470px;
         width: 23%;
         padding: 0 10px;
-        background-color: #da1d1d;
+        
       }
 
     .bottom{
         position: absolute;
         bottom: 0;
-        height: 470px;
+        height: 300px;
         width: 23%;
-        padding: 0 100px;
-        background-color: #000000;
-        bottom:100;
+        padding: 0 10px;
+        
+
     }
 
     

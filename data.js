@@ -1,9 +1,5 @@
-function hiFunction(){
-    var userId=document.getElementById("user").value ;
-    console.log("hi "+userId);
-
-}
 var globalId="";
+var langChart=null;
 
 function inputFunction(){
     var userId=document.getElementById("user").value ;
@@ -14,7 +10,7 @@ function inputFunction(){
     catch(e){
         alert("Invalid Input")
     }
-    
+    if (langChart != null) langChart.destroy();
 }
 
 async function main(userId){
@@ -91,11 +87,12 @@ async function show(value){
 
 
 async function findRepo(){
-    if (chart2 != null) chart2.destroy();
-    
-    
+
+    if (langChart != null) langChart.destroy();    
+
+
     var repoName=document.getElementById("repo").value ;
-    console.log(repoName);
+
     url=`https://api.github.com/repos/${globalId}/${repoName}/languages`;
     let repoInfo=await getRequest(url).catch(error => console.error(error));
     get_language_pie(repoInfo);
@@ -116,20 +113,16 @@ async function get_language_pie(repo) {
             } else {
                 label.push(language);
                 data.push(languages[language]);
-                backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.2)`);       
+                backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`);       
             }
         }
-
-
-
-    draw2('language', 'pie', 'languages', `💭 Programming Languages (in bytes) 💭`, label, data, backgroundColor);
+    drawLangChart('language', 'doughnut', 'languages', "Languages in the Repository", label, data, backgroundColor);
 }
 
-function draw2(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
-    console.log(ctx);
+function drawLangChart(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
     let myChart = document.getElementById(ctx).getContext('2d');
-
-    chart2 = new Chart(myChart, {
+    console.log(titleText);
+    langChart = new Chart(myChart, {
         type: type,
         data: {
             labels: label,
@@ -145,30 +138,16 @@ function draw2(ctx, type, datasetLabel, titleText, label, data, backgroundColor)
 
         },
         options: {
-            title: {
-                display: true,
-                text: titleText,
-                fontSize: 20
-            },
-            legend: {
-                display: true,
+            responsive: true,
+            plugins: {
+              legend: {
                 position: 'bottom',
-                labels: {
-                    fontColor: '#000'
-                }
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
-                    bottom: 0,
-                    top: 0
-                }
-            },
-            tooltips: {
-                enabled: true
+              },
+              title: {
+                display: true,
+                text: titleText
+              }
             }
-        }
+          },
     });
 }
-var chart2=null;

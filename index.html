@@ -18,24 +18,28 @@
             <br/>
             GitHub Username: <input id="user" type="text"/>
             <button onclick="inputFunction()"> Search </button> 
-
         </h3>
         <br/>
 
-        <div class="container-fluid"; style="text-align: left">
-            <div class="row">
-                <img class="img-fluid" id="img" src=''>               
-                <p id="name"></p>
-                <p id="userName"></p>
-                <p id="bio"></p>
-                <p id="followers"></p>
-                <p id="following"></p>
-                <p id="location"></p>
-                <p id="public_repos"></p>
-             </div>       
-           
-            
+        <div class="blocks"; style="text-align: left">
+            <img class="img-fluid" id="img" src=''>               
+            <p id="name"></p>
+            <p id="userName"></p>
+            <p id="bio"></p>
+            <p id="followers"></p>
+            <p id="following"></p>
+            <p id="location"></p>
+            <p id="public_repos"></p>     
         </div>
+        <div class="blocks"; style="text-align: left">
+            <div id="repoSearchBox"  style="display:none;" >
+                Repositories: <input id="repo" list="datalist" onkeyup="show(this.value)">
+                <datalist id=datalist></datalist>
+                <button onclick="findRepo()"> Search </button>
+            </div>
+        </div>
+
+
 
     
 

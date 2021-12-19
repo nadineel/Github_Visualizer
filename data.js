@@ -3,34 +3,35 @@ function hiFunction(){
     console.log("hi "+userId);
 
 }
+var globalId="";
 
 function inputFunction(){
     var userId=document.getElementById("user").value ;
-
+    globalId=userId;
     try{
     main(userId)
     }
     catch(e){
         alert("Invalid Input")
     }
+    
 }
 
 async function main(userId){
-    //let url = `https://api.github.com/users/${userId}/repos`;
-    
-    //let repo = await getRequest(url).catch(error => console.error(error));
 
     url = `https://api.github.com/users/${userId}`;
     let userInfo = await getRequest(url).catch(error => console.error(error));
 
-
-
     userInfo_col(userInfo)
 
+    
+    url=`https://api.github.com/users/${userId}/repos`;
+    let repoInfo=await getRequest(url).catch(error => console.error(error)); 
+    repoSearchBox(repoInfo); 
 }
 
 async function getRequest(url) {
-    let token='';
+    let token='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';
     const headers = {
         'Authorization': `Token ${token}`
     }
@@ -69,4 +70,34 @@ function userInfo_col(userInfo){
 
     let public_repos = document.getElementById('public_repos');
     public_repos.innerHTML = `<b>Public Repositories: </b>${userInfo.public_repos}`;
+}
+
+function repoSearchBox(repoInfo){
+    document.getElementById("repoSearchBox").style.display = "block";
+    let repoNames=document.querySelectorAll('name');
+    repoNames.innerHTML = `${repoInfo[1].name}`;
+    
+
+}
+
+async function show(value){    
+    url=`https://api.github.com/users/${globalId}/repos`;
+    let repoInfo=await getRequest(url).catch(error => console.error(error)); 
+
+    document.getElementById("datalist").innerHTML="";
+    list=value.length
+    for(let i=0;i<repoInfo.length;i++){
+        if((((repoInfo[i].name).toLowerCase()).indexOf(value.toLowerCase()))>-1){
+            var n=document.createElement("option");
+            var v=document.createTextNode(repoInfo[i].name);
+            n.appendChild(v);
+            document.getElementById("datalist").appendChild(n);
+
+        }
+    }
+}
+
+
+function findRepo(repo){
+    console.log("searching");
 }

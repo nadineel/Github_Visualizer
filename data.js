@@ -95,9 +95,18 @@ async function findRepo(){
 
     url=`https://api.github.com/repos/${globalId}/${repoName}/languages`;
     let repoInfo=await getRequest(url).catch(error => console.error(error));
-    get_language_pie(repoInfo);
+    get_languages(repoInfo);
+
+    url=`https://api.github.com/repos/${globalId}/${repoName}/stats/contributors`;
+    repoInfo=await getRequest(url).catch(error => console.error(error));
+    get_graph(repoInfo);
+
+    
 }
-async function get_language_pie(repo) {
+
+
+
+async function get_languages(repo) {
     let label = [];
     let data = [];
     let backgroundColor = [];
@@ -121,7 +130,6 @@ async function get_language_pie(repo) {
 
 function drawLangChart(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
     let myChart = document.getElementById(ctx).getContext('2d');
-    console.log(titleText);
     langChart = new Chart(myChart, {
         type: type,
         data: {
@@ -151,3 +159,16 @@ function drawLangChart(ctx, type, datasetLabel, titleText, label, data, backgrou
           },
     });
 }
+
+async function get_graph(repo) {
+    let label = [];
+    let commits = [];
+    let addition = [];
+    let deletion = [];
+    let stats=repo
+
+    for(contri in stats){
+        console.log(stats[contri].author.login);
+    }
+}
+

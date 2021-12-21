@@ -28,23 +28,22 @@ body{
         max-width: 30%;  
     }
 
-    .blocks {
+    .blocks {       
+        width: 25%;
+        height: 100%;
+        position: relative;
         float: left;
-        height: 470px;
-        width: 30%;
-        padding: 0 10px;
-        
+        padding: 0 10px;  
       }
 
-    .bottom{
-        position: absolute;
-        bottom: 0;
-        height: 300px;
-        width: 23%;
+      .rightpane {
+        width: 50%;
+        height: 100%;
+        position: relative;
+        float: right;
+        border-collapse: collapse;
         padding: 0 10px;
-        
-
-    }
+      }
 
     
     

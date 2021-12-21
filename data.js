@@ -167,7 +167,6 @@ async function get_graph(repo) {
     let deletion = [];
     let stats=repo;
     
-
     for (stat in stats) {
         if (stats[stat].author.login == globalId) {   
             for (ad in stats[stat].weeks) {
@@ -179,7 +178,6 @@ async function get_graph(repo) {
 
         }
     }
-
     draw2('insertion', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion);
 
 }

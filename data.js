@@ -1,5 +1,6 @@
 var globalId="";
 var langChart=null;
+var chart2=null;
 
 function inputFunction(){
     var userId=document.getElementById("user").value ;
@@ -11,6 +12,7 @@ function inputFunction(){
         alert("Invalid Input")
     }
     if (langChart != null) langChart.destroy();
+    if (chart2 != null) chart2.destroy();
 }
 
 async function main(userId){
@@ -89,7 +91,7 @@ async function show(value){
 async function findRepo(){
 
     if (langChart != null) langChart.destroy();    
-
+    if (chart2 != null) chart2.destroy(); 
 
     var repoName=document.getElementById("repo").value ;
 
@@ -103,8 +105,6 @@ async function findRepo(){
 
     
 }
-
-
 
 async function get_languages(repo) {
     let label = [];
@@ -125,10 +125,10 @@ async function get_languages(repo) {
                 backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`);       
             }
         }
-    drawLangChart('language', 'doughnut', 'languages', "Languages in the Repository", label, data, backgroundColor);
+    draw1('language', 'doughnut', 'languages', "Languages in the Repository", label, data, backgroundColor);
 }
 
-function drawLangChart(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
+function draw1(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
     let myChart = document.getElementById(ctx).getContext('2d');
     langChart = new Chart(myChart, {
         type: type,
@@ -165,10 +165,68 @@ async function get_graph(repo) {
     let commits = [];
     let addition = [];
     let deletion = [];
-    let stats=repo
+    let stats=repo;
+    
 
-    for(contri in stats){
-        console.log(stats[contri].author.login);
+    for (stat in stats) {
+        if (stats[stat].author.login == globalId) {   
+            for (ad in stats[stat].weeks) {
+                    label.push(ad);
+                    addition.push(stats[stat].weeks[ad].a);                    
+                    deletion.push(stats[stat].weeks[ad].d);
+  
+            }
+
+        }
     }
+
+    draw2('insertion', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion);
+
 }
 
+function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2) {
+    let myChart = document.getElementById(ctx).getContext('2d');
+
+    chart2 = new Chart(myChart, {
+        type: type,
+        data: {
+            labels: datasetLabel,
+            datasets: [{
+                type: type,
+                label: 'Addition',
+                borderColor: 'rgba(0, 0, 255, 0.5)',
+                borderWidth: 1,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#000',
+                fill: true,
+                data: dataset1,
+                
+            },
+            {
+                type: type2,
+                label: 'Deletion',
+                borderColor: 'rgba(0, 255,0, 0.5)',
+                borderWidth: 1,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#000',
+                fill: true,
+                data: dataset2,
+
+            }
+           ]
+
+        },
+        options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              },
+              title: {
+                display: true,
+                text: titleText
+              }
+            }
+          },
+    });
+}

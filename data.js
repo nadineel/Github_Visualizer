@@ -165,6 +165,7 @@ async function get_graph(repo) {
     let commits = [];
     let addition = [];
     let deletion = [];
+    let contributors="";
     let stats=repo;
     
     for (stat in stats) {
@@ -180,9 +181,15 @@ async function get_graph(repo) {
             }
 
         }
+        contributors+=stats[stat].author.login+", ";
+        
     }
-    draw2('insertion', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
+    draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
+    
+    
+    document.getElementById('contribs').innerHTML = "Contributors: "+contributors;
 
+    
 }
 
 function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3) {

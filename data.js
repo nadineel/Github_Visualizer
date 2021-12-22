@@ -181,7 +181,7 @@ async function get_graph(repo) {
             }
 
         }
-        contributors+=stats[stat].author.login+", ";
+        contributors+=stats[stat].author.login+" ";
         
     }
     draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
@@ -194,7 +194,6 @@ async function get_graph(repo) {
 
 function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3) {
     let myChart = document.getElementById(ctx).getContext('2d');
-
     chart2 = new Chart(myChart, {
         type: type,
         data: {
@@ -203,9 +202,9 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
                 type: type,
                 label: 'Addition',
                 borderColor: 'rgba(0, 0, 255, 0.5)',
+                backgroundColor:'rgba(0, 0, 255, 0.2)',
                 borderWidth: 1,
-                hoverBorderWidth: 2,
-                hoverBorderColor: '#000',
+                hoverBorderWidth: 2,               
                 fill: true,
                 data: dataset1,
                 
@@ -214,9 +213,9 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
                 type: type2,
                 label: 'Deletion',
                 borderColor: 'rgba(0, 255,0, 0.5)',
+                backgroundColor:'rgba(0, 255, 0, 0.2)',
                 borderWidth: 1,
                 hoverBorderWidth: 2,
-                hoverBorderColor: '#000',
                 fill: true,
                 data: dataset2,
 
@@ -225,12 +224,11 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
                 type: type2,
                 label: 'Commits',
                 borderColor: 'rgba(255, 0,0, 0.5)',
+                
                 borderWidth: 1,
                 hoverBorderWidth: 2,
-                hoverBorderColor: '#000',
-                fill: false,
                 data: dataset3,
-                yAxisID: 'y-axis-2'
+                yAxisID: 'y-axis-1'
             }
            ]
 

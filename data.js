@@ -170,19 +170,22 @@ async function get_graph(repo) {
     for (stat in stats) {
         if (stats[stat].author.login == globalId) {   
             for (ad in stats[stat].weeks) {
-                    label.push(ad);
-                    addition.push(stats[stat].weeks[ad].a);                    
-                    deletion.push(stats[stat].weeks[ad].d);
-  
+                    
+                    if(stats[stat].weeks[ad].a>0 ||stats[stat].weeks[ad].b>0||stats[stat].weeks[ad].c>0){
+                        label.push(ad);
+                        addition.push(stats[stat].weeks[ad].a);                    
+                        deletion.push(stats[stat].weeks[ad].d);
+                        commits.push(stats[stat].weeks[ad].c);
+                    }
             }
 
         }
     }
-    draw2('insertion', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion);
+    draw2('insertion', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
 
 }
 
-function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2) {
+function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3) {
     let myChart = document.getElementById(ctx).getContext('2d');
 
     chart2 = new Chart(myChart, {
@@ -210,6 +213,17 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2) {
                 fill: true,
                 data: dataset2,
 
+            },
+            {
+                type: type2,
+                label: 'Commits',
+                borderColor: 'rgba(255, 0,0, 0.5)',
+                borderWidth: 1,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#000',
+                fill: false,
+                data: dataset3,
+                yAxisID: 'y-axis-2'
             }
            ]
 

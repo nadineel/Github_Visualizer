@@ -1,5 +1,5 @@
 var globalId="";
-var langChart=null;
+var chart1=null;
 var chart2=null;
 
 function inputFunction(){
@@ -11,7 +11,7 @@ function inputFunction(){
     catch(e){
         alert("Invalid Input")
     }
-    if (langChart != null) langChart.destroy();
+    if (chart1 != null) chart1.destroy();
     if (chart2 != null) chart2.destroy();
 }
 
@@ -20,7 +20,10 @@ async function main(userId){
     url = `https://api.github.com/users/${userId}`;
     let userInfo = await getRequest(url).catch(error => console.error(error));
 
-    userInfo_col(userInfo)
+    url = `https://api.github.com/users/${userId}/repos`;
+    let userInfo_lang = await getRequest(url).catch(error => console.error(error));
+
+    userInfo_col(userInfo,userInfo_lang);
     repoSearchBox(); 
 }
 
@@ -40,7 +43,7 @@ async function getRequest(url) {
 }
 
 //sidebar with all information of user
-function userInfo_col(userInfo){
+function userInfo_col(userInfo,userInfo2){
     let img = document.getElementById('img');
     img.src = userInfo.avatar_url
 
@@ -51,7 +54,7 @@ function userInfo_col(userInfo){
     username.innerHTML = `<b>Username: </b>${userInfo.login}`;
 
     let bio = document.getElementById('bio');
-    bio.innerHTML = `<b>Bio: </b>${userInfo.bio !== null ? userInfo.bio: "No Bio"}`;
+    bio.innerHTML = `<b>Bio: </b>${userInfo.bio !== null ? userInfo.bio: ""}`;
 
     let followers = document.getElementById('followers');
     followers.innerHTML = `<b>Followers: </b>${userInfo.followers}`;
@@ -64,6 +67,8 @@ function userInfo_col(userInfo){
 
     let public_repos = document.getElementById('public_repos');
     public_repos.innerHTML = `<b>Public Repositories: </b>${userInfo.public_repos}`;
+
+    get_all_languages(userInfo2);
 }
 
 function repoSearchBox(){
@@ -87,10 +92,9 @@ async function show(value){
     }
 }
 
-
 async function findRepo(){
 
-    if (langChart != null) langChart.destroy();    
+    if (chart1 != null) chart1.destroy();    
     if (chart2 != null) chart2.destroy(); 
 
     var repoName=document.getElementById("repo").value ;
@@ -102,8 +106,33 @@ async function findRepo(){
     url=`https://api.github.com/repos/${globalId}/${repoName}/stats/contributors`;
     repoInfo=await getRequest(url).catch(error => console.error(error));
     get_graph(repoInfo);
+   
+}
+async function get_all_languages(repo) {
+    let label = [];
+    let data = [];
+    let backgroundColor = [];
 
-    
+    for (i in repo) {
+        let url = `https://api.github.com/repos/${globalId}/${repo[i].name}/languages`;
+        let languages = await getRequest(url).catch(error => console.error(error));
+
+        for (language in languages) {
+
+            if (label.includes(language)) {
+                for (i = 0; i < label.length; i++)
+                    if (language == label[i])
+                        data[i] = data[i] + languages[language];
+
+            } else {
+                label.push(language);
+                data.push(languages[language]);
+                backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`);
+            }
+        }
+
+    }
+    draw1('language1', 'doughnut', 'languages', "Languages used by "+ globalId, label, data, backgroundColor);
 }
 
 async function get_languages(repo) {
@@ -128,38 +157,6 @@ async function get_languages(repo) {
     draw1('language', 'doughnut', 'languages', "Languages in the Repository", label, data, backgroundColor);
 }
 
-function draw1(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
-    let myChart = document.getElementById(ctx).getContext('2d');
-    langChart = new Chart(myChart, {
-        type: type,
-        data: {
-            labels: label,
-            datasets: [{
-                label: datasetLabel,
-                data: data,
-                backgroundColor: backgroundColor,
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 2,
-                hoverBorderColor: '#000'
-            }],
-
-        },
-        options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'bottom',
-              },
-              title: {
-                display: true,
-                text: titleText
-              }
-            }
-          },
-    });
-}
-
 async function get_graph(repo) {
     let label = [];
     let commits = [];
@@ -181,14 +178,43 @@ async function get_graph(repo) {
             }
 
         }
-        contributors+=stats[stat].author.login+" ";
-        
+        contributors+=stats[stat].author.login+" ";        
     }
     draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits,contributors);
-
-    
+   
 }
 
+//drawing graphs using Chart.js
+function draw1(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
+    let myChart = document.getElementById(ctx).getContext('2d');
+    chart1 = new Chart(myChart, {
+        type: type,
+        data: {
+            labels: label,
+            datasets: [{
+                label: datasetLabel,
+                data: data,
+                backgroundColor: backgroundColor,
+                borderWidth: 1,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#000'
+            }],
+
+        },
+        options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              },
+              title: {
+                display: true,
+                text: titleText
+              }
+            }
+          },
+    });
+}
 function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3,contributors) {
     let myChart = document.getElementById(ctx).getContext('2d');
     chart2 = new Chart(myChart, {
@@ -198,7 +224,7 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
             datasets: [{
                 type: type,
                 label: 'Addition',
-                borderColor: 'rgba(0, 0, 255, 0.5)',
+                borderColor: 'rgba(0, 0, 255, 0.7)',
                 backgroundColor:'rgba(0, 0, 255, 0.2)',
                 borderWidth: 1,
                 hoverBorderWidth: 2,               
@@ -209,8 +235,8 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
             {
                 type: type2,
                 label: 'Deletion',
-                borderColor: 'rgba(0, 255,0, 0.5)',
-                backgroundColor:'rgba(0, 255, 0, 0.2)',
+                borderColor: 'rgba(255, 0,0, 0.7)',
+                backgroundColor:'rgba(255, 0,0, 0.2)',
                 borderWidth: 1,
                 hoverBorderWidth: 2,
                 fill: true,
@@ -220,8 +246,7 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
             {
                 type: type2,
                 label: 'Commits',
-                borderColor: 'rgba(255, 0,0, 0.5)',
-                
+                borderColor: 'rgba(0, 255, 0, 1)', 
                 borderWidth: 1,
                 hoverBorderWidth: 2,
                 data: dataset3,

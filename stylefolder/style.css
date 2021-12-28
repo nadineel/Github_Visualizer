@@ -23,7 +23,7 @@ body{
         font-weight:400;
         letter-spacing:2px
     }
-    .img-fluid{
+    .userInfo{
         max-height:auto;
         max-width: 30%;  
     }

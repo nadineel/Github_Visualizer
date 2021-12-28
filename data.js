@@ -25,7 +25,7 @@ async function main(userId){
 }
 
 async function getRequest(url) {
-    let token='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';
+    let token='';
     const headers = {
         'Authorization': `Token ${token}`
     }
@@ -184,15 +184,12 @@ async function get_graph(repo) {
         contributors+=stats[stat].author.login+" ";
         
     }
-    draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
-    
-    
-    document.getElementById('contribs').innerHTML = "Contributors: "+contributors;
+    draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits,contributors);
 
     
 }
 
-function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3) {
+function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3,contributors) {
     let myChart = document.getElementById(ctx).getContext('2d');
     chart2 = new Chart(myChart, {
         type: type,
@@ -242,7 +239,11 @@ function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dat
               title: {
                 display: true,
                 text: titleText
-              }
+              },
+              subtitle: {
+                display: true,
+                text: 'Contributors: '+ contributors
+            }
             }
           },
     });

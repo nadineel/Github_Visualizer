@@ -6,7 +6,7 @@ function inputFunction(){
     var userId=document.getElementById("user").value ;
     globalId=userId;
     try{
-    main(userId)
+    getUserInfo(userId)
     }
     catch(e){
         alert("Invalid Input")
@@ -15,17 +15,23 @@ function inputFunction(){
     if (chart2 != null) chart2.destroy();
 }
 
-async function main(userId){
-
+async function getUserInfo(userId){
     url = `https://api.github.com/users/${userId}`;
     let userInfo = await getRequest(url).catch(error => console.error(error));
 
-    userInfo_col(userInfo)
+    url = `https://api.github.com/users/${userId}/repos`;
+    let userInfo_lang = await getRequest(url).catch(error => console.error(error));
+
+    userInfo_col(userInfo,userInfo_lang);
     repoSearchBox(); 
 }
 
 async function getRequest(url) {
+<<<<<<< HEAD
     let token='';
+=======
+    let token='';       //must insert token here
+>>>>>>> 954a30dcdda6880a4e233b1180d2d3519eada793
     const headers = {
         'Authorization': `Token ${token}`
     }
@@ -40,7 +46,7 @@ async function getRequest(url) {
 }
 
 //sidebar with all information of user
-function userInfo_col(userInfo){
+function userInfo_col(userInfo,userInfo2){
     let img = document.getElementById('img');
     img.src = userInfo.avatar_url
 
@@ -64,13 +70,16 @@ function userInfo_col(userInfo){
 
     let public_repos = document.getElementById('public_repos');
     public_repos.innerHTML = `<b>Public Repositories: </b>${userInfo.public_repos}`;
+
+    get_all_languages(userInfo2);
 }
 
+//hides searchbox until user info is out
 function repoSearchBox(){
-    document.getElementById("repoSearchBox").style.display = "block";
-    
+    document.getElementById("repoSearchBox").style.display = "block";    
 }
 
+//handles auto-fill of repositories
 async function show(value){    
     url=`https://api.github.com/users/${globalId}/repos`;
     let repoInfo=await getRequest(url).catch(error => console.error(error)); 
@@ -87,9 +96,8 @@ async function show(value){
     }
 }
 
-
+//retrieves information from a repository
 async function findRepo(){
-
     if (langChart != null) langChart.destroy();    
     if (chart2 != null) chart2.destroy(); 
 
@@ -99,13 +107,47 @@ async function findRepo(){
     let repoInfo=await getRequest(url).catch(error => console.error(error));
     get_languages(repoInfo);
 
-    url=`https://api.github.com/repos/${globalId}/${repoName}/stats/contributors`;
+    var contrId=document.getElementById("contri").value ;
+    if(contrId==''){
+        url=`https://api.github.com/repos/${globalId}/${repoName}/stats/contributors`;
+    }
+    else{
+        url=`https://api.github.com/repos/${contrId}/${repoName}/stats/contributors`;
+    }
     repoInfo=await getRequest(url).catch(error => console.error(error));
-    get_graph(repoInfo);
+    displayContributor(repoInfo);
 
     
 }
 
+async function get_all_languages(repo) {
+    let label = [];
+    let data = [];
+    let backgroundColor = [];
+
+    for (i in repo) {
+        let url = `https://api.github.com/repos/${globalId}/${repo[i].name}/languages`;
+        let languages = await getRequest(url).catch(error => console.error(error));
+
+        for (language in languages) {
+
+            if (label.includes(language)) {
+                for (i = 0; i < label.length; i++)
+                    if (language == label[i])
+                        data[i] = data[i] + languages[language];
+
+            } else {
+                label.push(language);
+                data.push(languages[language]);
+                backgroundColor.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.2)`);
+            }
+        }
+
+    }
+    draw1('language', 'doughnut', 'languages', "Languages used by "+ globalId, label, data, backgroundColor);
+}
+
+//retrieves languages used in a repository
 async function get_languages(repo) {
     let label = [];
     let data = [];
@@ -126,6 +168,41 @@ async function get_languages(repo) {
             }
         }
     draw1('language', 'doughnut', 'languages', "Languages in the Repository", label, data, backgroundColor);
+}
+
+async function get_graph(repo) {
+    let label = [];
+    let commits = [];
+    let addition = [];
+    let deletion = [];
+    let contributors="";
+    let stats=repo;
+    
+    for (stat in stats) {
+        if (stats[stat].author.login == globalId) {   
+            for (ad in stats[stat].weeks) {
+                    
+                    if(stats[stat].weeks[ad].a>0 ||stats[stat].weeks[ad].b>0||stats[stat].weeks[ad].c>0){
+                        label.push(ad);
+                        addition.push(stats[stat].weeks[ad].a);                    
+                        deletion.push(stats[stat].weeks[ad].d);
+                        commits.push(stats[stat].weeks[ad].c);
+                    }
+            }
+
+        }
+        contributors+=stats[stat].author.login+" ";
+        
+    }
+    draw2('graph_cad', 'bar', 'line', 'Additions and Deletions of '+ globalId+ " for this repository", label, addition, deletion,commits);
+    
+    document.getElementById('contribs').innerHTML = "Contributors: "+contributors;
+
+    
+}
+function displayContributor(repo){
+    document.getElementById("contri").style.display = "block"; 
+    get_graph(repo);
 }
 
 function draw1(ctx, type, datasetLabel, titleText, label, data, backgroundColor) {
@@ -160,6 +237,7 @@ function draw1(ctx, type, datasetLabel, titleText, label, data, backgroundColor)
     });
 }
 
+<<<<<<< HEAD
 async function get_graph(repo) {
     let label = [];
     let commits = [];
@@ -190,6 +268,9 @@ async function get_graph(repo) {
 }
 
 function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3,contributors) {
+=======
+function draw2(ctx, type, type2, titleText, datasetLabel, dataset1, dataset2,dataset3) {
+>>>>>>> 954a30dcdda6880a4e233b1180d2d3519eada793
     let myChart = document.getElementById(ctx).getContext('2d');
     chart2 = new Chart(myChart, {
         type: type,

@@ -54,8 +54,8 @@ function userInfo_col(userInfo,userInfo2){
     username.innerHTML = `<b>Username: </b>${userInfo.login}`;
 
     let bio = document.getElementById('bio');
-    bio.innerHTML = `<b>Bio: </b>${userInfo.bio !== null ? userInfo.bio: ""}`;
-
+    userInfo.bio !== null ? bio.innerHTML = `<b>Bio: </b>${userInfo.bio}`: "";  
+    
     let followers = document.getElementById('followers');
     followers.innerHTML = `<b>Followers: </b>${userInfo.followers}`;
 
@@ -63,7 +63,7 @@ function userInfo_col(userInfo,userInfo2){
     following.innerHTML = `<b>Following: </b>${userInfo.following}`;
 
     let location = document.getElementById('location');
-    location.innerHTML = `<b>Location: </b>${userInfo.location}`;
+    userInfo.location !== null ? location.innerHTML = `<b>Location: </b>${userInfo.location}`: "";    
 
     let public_repos = document.getElementById('public_repos');
     public_repos.innerHTML = `<b>Public Repositories: </b>${userInfo.public_repos}`;

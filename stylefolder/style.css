@@ -36,14 +36,14 @@ body{
         padding: 0 10px;  
       }
 
-      .rightpane {
-        width: 50%;
-        height: 100%;
-        position: relative;
-        float: right;
-        border-collapse: collapse;
-        padding: 0 10px;
-      }
+    .rightpane {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    float: right;
+    border-collapse: collapse;
+    padding: 0 10px;
+    }
 
     
     

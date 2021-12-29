@@ -28,7 +28,7 @@ async function main(userId){
 }
 
 async function getRequest(url) {
-    let token='';
+    let token='';                   //INSERT TOKEN WITHIN ''
     const headers = {
         'Authorization': `Token ${token}`
     }

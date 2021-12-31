@@ -33,4 +33,13 @@ Visit my website to access the project online
 **[GitHub Visualizer](https://nadineel.github.io/github-visualiser.html)**
 
 ## Demo
-  insert screenshots
+
+
+## Reflection
+
+This project uses JavaScript for its backend and HTML and CSS for the front end. I chose these languages because I have had little experience of them and I wanted to take the opportunity to learn how to use it more. \
+On the otherhand, GitHub API Docs and Chart.js are two components of the project that I was not aware of beforehand. It took me awhile to get started because I was struggling to decide what I want to showcase and how I should implement.
+
+Overall, this assignment definitely improved my skills as a programmer and coding it has been great and satisfying especially when things started going my way. At the beginning, I constantly forget to commit my changes in the repository but as I kept working on it, I commit changes every so often as I found the need to constantly return to the previous version of my repository after some unsuccessful attempts to progress with the project. 
+
+

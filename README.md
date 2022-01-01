@@ -42,7 +42,7 @@ Below that is an interactive Search Bar to navigate through the user's public re
 This screenshot displays my overall activity for this project's repository. \
 The doughnut chart displays the languages I used in this project and how much each takes up. The graph on the right pane displays my interaction with the project. It also shows the contributors on the repository. The x-axis shows the weeks the user has had any commit, deletion, or addition starting from when it was created (Week 0). Notice that 1 and 2 are missing. It is because there was no activity during those weeks hence, I dicided to leave them out.
 
-![Search for a repository](demo/repo_data_collection.mp4)
+![Search for a repository](demo/repo_data_collection.gif)
 Here is a demonstration of me navigating through different repositories from my account. It will also work for different Github accounts. 
 
 
